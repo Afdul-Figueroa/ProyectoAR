@@ -1,8 +1,6 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
+import { MindARThree } from "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js";
 
 
 const start = async () => {
@@ -17,7 +15,6 @@ const start = async () => {
     });
 
 
-
     const {
         renderer,
         scene,
@@ -26,91 +23,65 @@ const start = async () => {
 
 
 
+    // quitar fondo blanco
+
     renderer.setClearColor(
         0x000000,
         0
     );
 
 
+    // luz
+
     const light = new THREE.HemisphereLight(
         0xffffff,
         0xffffff,
-        2
+        1
     );
 
     scene.add(light);
 
 
 
-    const anchor = mindarThree.addAnchor(0);
+    // cubo de prueba
 
-
-
-    const loader = new GLTFLoader();
-
-
-    loader.load(
-
-        "./models/proyecto.glb",
-
-        (gltf)=>{
-
-
-            const model = gltf.scene;
-
-
-            model.scale.set(
-                0.05,
-                0.05,
-                0.05
-            );
-
-
-            model.position.set(
-                0,
-                0,
-                0
-            );
-
-
-            // IMPORTANTE:
-            // lo añadimos directamente a la escena
-
-            scene.add(model);
-
-
-
-            console.log(
-                "MODELO EN ESCENA"
-            );
-
-
-        },
-
-        undefined,
-
-
-        (error)=>{
-
-            console.log(
-                error
-            );
-
-        }
-
+    const geometry = new THREE.BoxGeometry(
+        0.5,
+        0.5,
+        0.5
     );
+
+
+    const material = new THREE.MeshBasicMaterial({
+        color: 0xff0000
+    });
+
+
+    const cube = new THREE.Mesh(
+        geometry,
+        material
+    );
+
+
+    cube.position.z = -1;
+
+
+    scene.add(cube);
 
 
 
     await mindarThree.start();
 
 
-    renderer.setAnimationLoop(()=>{
+
+    renderer.setAnimationLoop(() => {
+
 
         renderer.render(
             scene,
             camera
         );
+
 
     });
 
