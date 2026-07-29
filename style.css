@@ -1,13 +1,35 @@
-html,
-body{
-    margin:0;
-    padding:0;
-    overflow:hidden;
-    width:100%;
-    height:100%;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
-a-scene{
-    width:100%;
-    height:100%;
+
+body {
+    background: black;
+}
+
+
+#ar-container {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+
+
+#ar-container video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+}
+
+
+canvas {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
 }
