@@ -1,92 +1,71 @@
-import * as THREE from "three";
-
-import { MindARThree } from "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
 
 
-const start = async () => {
+const scene = new THREE.Scene();
 
 
-    const mindarThree = new MindARThree({
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
 
-        container: document.querySelector("#ar-container"),
 
-        imageTargetSrc: "./targets/plano.mind"
+const renderer = new THREE.WebGLRenderer({
+    alpha:true
+});
 
-    });
+
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
 
 
-    const {
-        renderer,
+document
+.getElementById("ar-container")
+.appendChild(renderer.domElement);
+
+
+
+const geometry = new THREE.BoxGeometry(
+    1,
+    1,
+    1
+);
+
+
+const material = new THREE.MeshBasicMaterial({
+    color:0xff0000
+});
+
+
+const cube = new THREE.Mesh(
+    geometry,
+    material
+);
+
+
+cube.position.z = -5;
+
+
+scene.add(cube);
+
+
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    cube.rotation.y += 0.01;
+
+    renderer.render(
         scene,
         camera
-    } = mindarThree;
-
-
-
-    // quitar fondo blanco
-
-    renderer.setClearColor(
-        0x000000,
-        0
     );
 
-
-    // luz
-
-    const light = new THREE.HemisphereLight(
-        0xffffff,
-        0xffffff,
-        1
-    );
-
-    scene.add(light);
+}
 
 
-
-    // cubo de prueba
-
-    const geometry = new THREE.BoxGeometry(
-        0.5,
-        0.5,
-        0.5
-    );
-
-
-    const material = new THREE.MeshBasicMaterial({
-        color: 0xff0000
-    });
-
-
-    const cube = new THREE.Mesh(
-        geometry,
-        material
-    );
-
-
-    cube.position.z = -1;
-
-
-    scene.add(cube);
-
-
-
-    await mindarThree.start();
-
-
-
-    renderer.setAnimationLoop(() => {
-
-
-        renderer.render(
-            scene,
-            camera
-        );
-
-
-    });
-
-
-};
-
-
-start();
+animate();
