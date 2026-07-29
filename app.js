@@ -7,6 +7,7 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
 
 
+
 const start = async () => {
 
 
@@ -28,7 +29,16 @@ const start = async () => {
 
 
 
-    // Luz para iluminar la vivienda
+    // Hacer transparente el fondo del canvas AR
+
+    renderer.setClearColor(
+        0x000000,
+        0
+    );
+
+
+
+    // Luz para el modelo 3D
 
     const light = new THREE.HemisphereLight(
         0xffffff,
@@ -46,7 +56,7 @@ const start = async () => {
 
 
 
-    // Activar soporte Draco
+    // Soporte para modelos comprimidos Draco
 
     const dracoLoader = new DRACOLoader();
 
@@ -61,6 +71,10 @@ const start = async () => {
 
 
 
+    let model;
+
+
+
     loader.load(
 
         "./models/proyecto.glb",
@@ -69,11 +83,8 @@ const start = async () => {
         (gltf) => {
 
 
-            const model = gltf.scene;
+            model = gltf.scene;
 
-
-
-            // Escala inicial del modelo
 
             model.scale.set(
                 0.1,
@@ -82,15 +93,11 @@ const start = async () => {
             );
 
 
-
-            // Posición inicial
-
             model.position.set(
                 0,
                 0,
                 0
             );
-
 
 
             scene.add(model);
@@ -123,13 +130,13 @@ const start = async () => {
 
 
 
-    // Punto donde aparecerá el modelo
+    // Ancla al primer target del archivo .mind
 
-    mindarThree.addAnchor(0);
+    const anchor = mindarThree.addAnchor(0);
 
 
 
-    // Iniciar cámara AR
+    // Iniciar cámara
 
     try {
 
