@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 import { MindARThree } from 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
-
 
 
 const start = async () => {
@@ -20,7 +18,6 @@ const start = async () => {
     });
 
 
-
     const {
         renderer,
         scene,
@@ -29,7 +26,7 @@ const start = async () => {
 
 
 
-    // Hacer transparente el fondo del canvas AR
+    // Fondo transparente para que se vea la cámara
 
     renderer.setClearColor(
         0x000000,
@@ -37,26 +34,44 @@ const start = async () => {
     );
 
 
-
-    // Luz para el modelo 3D
+    // Luz
 
     const light = new THREE.HemisphereLight(
         0xffffff,
-        0xbbbbff,
-        1
+        0xbbbbbb,
+        2
     );
 
     scene.add(light);
 
 
 
-    // Cargar modelo GLB
+    // Crear ancla del plano
+
+    const anchor = mindarThree.addAnchor(0);
+
+
+
+    anchor.onTargetFound = () => {
+
+        console.log("🎯 PLANO DETECTADO");
+
+    };
+
+
+    anchor.onTargetLost = () => {
+
+        console.log("❌ PLANO PERDIDO");
+
+    };
+
+
+
+    // Cargar modelo
 
     const loader = new GLTFLoader();
 
 
-
-    // Soporte para modelos comprimidos Draco
 
     const dracoLoader = new DRACOLoader();
 
@@ -71,10 +86,6 @@ const start = async () => {
 
 
 
-    let model;
-
-
-
     loader.load(
 
         "./models/proyecto.glb",
@@ -83,8 +94,10 @@ const start = async () => {
         (gltf) => {
 
 
-            model = gltf.scene;
+            const model = gltf.scene;
 
+
+            // Ajusta aquí el tamaño de la vivienda
 
             model.scale.set(
                 0.1,
@@ -93,6 +106,8 @@ const start = async () => {
             );
 
 
+            // Posición sobre el plano
+
             model.position.set(
                 0,
                 0,
@@ -100,12 +115,12 @@ const start = async () => {
             );
 
 
-            scene.add(model);
+            anchor.group.add(model);
 
 
 
             console.log(
-                "✅ Modelo cargado correctamente"
+                "✅ MODELO CARGADO"
             );
 
 
@@ -117,26 +132,19 @@ const start = async () => {
 
         (error) => {
 
-
             console.error(
-                "❌ Error cargando modelo:",
+                "❌ Error modelo:",
                 error
             );
 
-
         }
+
 
     );
 
 
 
-    // Ancla al primer target del archivo .mind
-
-    const anchor = mindarThree.addAnchor(0);
-
-
-
-    // Iniciar cámara
+    // Iniciar MindAR
 
     try {
 
@@ -144,11 +152,16 @@ const start = async () => {
         await mindarThree.start();
 
 
+        console.log(
+            "✅ MindAR iniciado"
+        );
+
+
     } catch(error) {
 
 
-        console.log(
-            "No se pudo iniciar la cámara:",
+        console.error(
+            "❌ Error cámara:",
             error
         );
 
@@ -170,7 +183,6 @@ const start = async () => {
 
 
 };
-
 
 
 start();
